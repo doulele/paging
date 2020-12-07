@@ -1,2 +1,3 @@
-# paging
-This is a paging plug-in with paging
+# 前言
+#### 因为考略到多页码使用的方便性，所以用到了带有分页功能的分页插件：当你点击到当前显示页面的最后（或第一个）一个页码并且继续向下（或向上）翻页时，会跳出下一组(或上一组)页码，继续点击到显示页码的最后一张（或者第一张）重复动作
+#### 可以通过设置setbothendspages设置在没有用到显示分页功能时需要显示的页码(即最前边多少页显示出来和最后边多少页显示出来)；setcenterpages设置分页时需要显示的页码数；由于考虑到分页时应该和不分页时页码总长度一样，但是分页时需要添加两个省略号，所以设置的setbothendspages最好比setcenterpages多2 （例如：setbothendspages = 6;setcenterpages = 4)
