@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style type="text/css">
+    div,li{
+      box-sizing: border-box;
+      user-select: none;
+    }
+    .hidden{
+      display: none;
+    }
+    .pagebox .nowpage{
+      background-color: rgb(0,168,80);
+      color:#fff;
+    }
+    .pagebox{
+      max-width: 541px;min-width: 31px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-left:1px solid rgb(0,168,80);
+      border-radius: 2px;
+    }
+    .pagebox>div,.pagebox>li{
+      width: 30px;height: 30px;
+      border:1px solid rgb(0,168,80);
+      border-left: 0;
+      list-style: none;
+      float: left;
+      text-align: center;
+      line-height: 30px;
+      color:rgb(0,168,80);
+      cursor: pointer;
+    }
+    .pagebox>li:hover{
+      background-color: rgb(0,168,80);
+      color:#fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="pagebox">
+    <div class="lastpage">
+      <
+    </div>
+    <li class="nowpage page">1</li>
+    <div class="pageellipsis hidden">...</div>
+    <li class="page">2</li>
+    <li class="page">3</li>
+    <li class="page">4</li> 
+    <li class="page">5</li>
+    <li class="page">6</li>
+    <li class="page">7</li>
+    <li class="page">8</li>
+    <li class="page">9</li>
+    <li class="page">10</li> 
+    <li class="page">11</li>
+    <li class="page">12</li> 
+    <li class="page">13</li>
+    <li class="page">14</li>
+    <li class="page">15</li>
+    <li class="page">16</li>
+    <li class="page">17</li>
+    <li class="page">18</li>
+    <div class="nextpage">
+      >
+    </div>
+  </div>
+</body>
+<script type="text/javascript">
+let setbothendspages = 6 //设置要显示的页数
+let setcenterpages = 4 //设置跳转页时，中间页数
+let oPagebox =document.querySelector('.pagebox')
+let oLastpage = document.querySelector('.lastpage')
+let oNextpage = document.querySelector('.nextpage')
+let oPage = document.querySelectorAll('.page')
+let pagelenth = +oPage.length
+var oPageellipsis = document.querySelectorAll('.pageellipsis')
+
+//创建分页省略节点
+function createellipsis(parentnode,insertnode){
+  let cEllipsis = document.createElement('div')
+  cEllipsis.className = 'pageellipsis'
+  cEllipsis.innerText = '...'
+  parentnode.insertBefore(cEllipsis,insertnode)
+}
+//需要隐藏的和显示的页码函数
+function pageishidden(start,end,firstellip = 'add',secondellip = 'add'){
+  oPage.forEach(item => {
+    item.classList.add('hidden')
+    for(let i = start; i < end; i++){
+      oPage[i].classList.remove('hidden')
+    }
+  })
+  oPage[0].classList.remove('hidden')
+  oPage[pagelenth - 1].classList.remove('hidden')
+  oPageellipsis[0]? oPageellipsis[0].classList[firstellip]('hidden'):null
+  oPageellipsis[1]? oPageellipsis[1].classList[secondellip]('hidden'):null
+}
+//需要跳转的页码的数组函数
+var jampnumberarry = []
+function jampnumber(howpage){
+  let res = /^[0-9]+$/ //正整数
+  console.log(pagelenth,setbothendspages + setcenterpages)
+  for(let i = 1; i <= pagelenth; i++){
+    if(pagelenth >= setbothendspages){
+      if (res.test(i/howpage)) {//每一个跳转页页码
+        if(i + 2 < pagelenth - 2){//考虑两个省略号，实际跳转页应该是i+2，不能超过pagelength，且考略省略前和省略后不能是紧连着的数字所以要pagelength-2
+          jampnumberarry.push(i + 2)
+        }
+      }
+    }
+  }
+}
+
+/*初始化区域*/
+function init(){
+  if (pagelenth <= setbothendspages) {
+    oPagebox.style.width = ((pagelenth + 2)*30 + 1) + 'px'//设置pagebox宽度
+  }else{
+    oPagebox.style.width = ((setbothendspages + 4)*30 + 1) + 'px'//设置pagebox宽度
+  }
+  
+  if (pagelenth > setbothendspages + 2) {//隐藏页数大于要显示的页码,另外要考略两个省略号
+    createellipsis(oPagebox,oPage[pagelenth - 1])//添加省略号
+    oPageellipsis = document.querySelectorAll('.pageellipsis')
+    pageishidden(0,setbothendspages,'add','remove')
+  }
+}
+init()
+
+
+/*左右导航区域*/
+jampnumber(setcenterpages)//中间是4个页码
+console.log(jampnumberarry)
+//左右导航公用函数
+function turnpagefn(direction){
+  return function () {
+    //获取当前页码dom
+    let nowpagedom = [...oPage].find(item => item.classList.contains('nowpage'))
+    if(nowpagedom){//如果当前页码存在
+      //获取当前页吗
+      let nowpagedomnumber = +nowpagedom.innerText
+      //清除class带有nowpage的页码的nowpage
+      oPage.forEach((item) => {item.classList.remove('nowpage') })
+      //判断当前页是否是需要跳转的页码;以及第一个和最后一个需要跳转的页码
+      var selectpage = direction === 'next'? nowpagedomnumber:nowpagedomnumber-1
+      var isjampnumber = jampnumberarry.includes(selectpage)
+      var minjampnumber = Math.min(...jampnumberarry)
+      var maxjampnumber = Math.max(...jampnumberarry)
+      //点击下一页或者上一页时显示当前页码；超出范围时显示最大或者最小页码
+      if (direction === 'next') {
+        nowpagedomnumber < pagelenth? oPage[nowpagedomnumber].classList.add('nowpage') : oPage[pagelenth - 1].classList.add('nowpage')
+      }else{
+        nowpagedomnumber > 1? oPage[nowpagedomnumber - (setbothendspages - setcenterpages)].classList.add('nowpage') : oPage[0].classList.add('nowpage')
+      }
+      //核心业务处理;
+      if(isjampnumber && (nowpagedomnumber === maxjampnumber)){//当页码是需要跳转的最后一个页码时，显示最后六个页码数，并删除第二个省略号
+         pageishidden(pagelenth - setbothendspages,pagelenth,'remove','add')
+      }else if(isjampnumber && (selectpage === minjampnumber)){//当前页码是第一个需要跳转的页码时根据点击上下页判断是否显示第一个省略号，并显示需要显示的页码
+        direction === 'next'? pageishidden(nowpagedomnumber,nowpagedomnumber + setcenterpages,'remove','remove'):pageishidden(0,setbothendspages,'add','remove')
+      }else if(isjampnumber){//当页码不是第一个和最后一个时，两个省略号都开启，并根据点击上下页显示需要显示的页码
+        direction === 'next'? pageishidden(nowpagedomnumber,nowpagedomnumber + setcenterpages,'remove','remove'):pageishidden(nowpagedomnumber - setbothendspages + 1,nowpagedomnumber - 1,'remove','remove')
+      }
+    }
+  }
+}
+
+//页码左右导航
+oNextpage.addEventListener('click',turnpagefn('next'))
+oLastpage.addEventListener('click',turnpagefn('last'))
+
+
+//页码点击功能
+for(let key of oPage){
+  key.addEventListener('click',function (){
+    oPage.forEach((item) => {item.classList.remove('nowpage') })
+    this.classList.add('nowpage')
+    if(this.innerText == 1){
+      pageishidden(0,setbothendspages,'add','remove')
+    }else if(this.innerText == pagelenth){
+      pageishidden(pagelenth - setbothendspages,pagelenth,'remove','add')
+    }
+  })
+}
+</script>
+</html>
