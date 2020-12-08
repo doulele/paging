@@ -119,6 +119,11 @@ function jampnumber(howpage){
 function init(){
   if (pagelenth <= setbothendspages) {
     oPagebox.style.width = ((pagelenth + 2)*30 + 1) + 'px'//设置pagebox宽度
+    if (pagelenth <= 1) {//页码小于1去掉上下翻页键
+      oLastpage.classList.add('hidden')
+      oNextpage.classList.add('hidden')
+    }
+    pagelenth == 0? oPagebox.style.width = '0px':null//没有页码时oPagebox宽度是0
   }else{
     oPagebox.style.width = ((setbothendspages + 4)*30 + 1) + 'px'//设置pagebox宽度
   }
