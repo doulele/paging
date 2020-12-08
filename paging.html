@@ -103,7 +103,6 @@ function pageishidden(start,end,firstellip = 'add',secondellip = 'add'){
 var jampnumberarry = []
 function jampnumber(howpage){
   let res = /^[0-9]+$/ //正整数
-  console.log(pagelenth,setbothendspages + setcenterpages)
   for(let i = 1; i <= pagelenth; i++){
     if(pagelenth >= setbothendspages){
       if (res.test(i/howpage)) {//每一个跳转页页码
@@ -139,7 +138,6 @@ init()
 
 /*左右导航区域*/
 jampnumber(setcenterpages)//中间是4个页码
-console.log(jampnumberarry)
 //左右导航公用函数
 function turnpagefn(direction){
   return function () {
